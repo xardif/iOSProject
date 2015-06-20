@@ -10,13 +10,15 @@
 		7C0B60871B2CF9C70067F904 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B60861B2CF9C70067F904 /* AppDelegate.swift */; };
 		7C0B608A1B2CF9C70067F904 /* imdbPresenter.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B60881B2CF9C70067F904 /* imdbPresenter.xcdatamodeld */; };
 		7C0B608C1B2CF9C70067F904 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B608B1B2CF9C70067F904 /* ViewController.swift */; };
-		7C0B608F1B2CF9C70067F904 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C0B608D1B2CF9C70067F904 /* Main.storyboard */; };
 		7C0B60911B2CF9C70067F904 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C0B60901B2CF9C70067F904 /* Images.xcassets */; };
 		7C0B60941B2CF9C70067F904 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C0B60921B2CF9C70067F904 /* LaunchScreen.xib */; };
 		7C0B60A01B2CF9C70067F904 /* imdbPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B609F1B2CF9C70067F904 /* imdbPresenterTests.swift */; };
 		7C0B60AD1B2CFA010067F904 /* Actor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B60AA1B2CFA010067F904 /* Actor.swift */; };
 		7C0B60AE1B2CFA010067F904 /* Indexable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B60AB1B2CFA010067F904 /* Indexable.swift */; };
 		7C0B60AF1B2CFA010067F904 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B60AC1B2CFA010067F904 /* Movie.swift */; };
+		7C98CC621B35D30000CB429D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C98CC611B35D30000CB429D /* Main.storyboard */; };
+		7C98CC651B35D38C00CB429D /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C98CC641B35D38C00CB429D /* TableViewController.swift */; };
+		7C98CC671B35F69B00CB429D /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C98CC661B35F69B00CB429D /* Cell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,7 +37,6 @@
 		7C0B60861B2CF9C70067F904 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7C0B60891B2CF9C70067F904 /* imdbPresenter.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = imdbPresenter.xcdatamodel; sourceTree = "<group>"; };
 		7C0B608B1B2CF9C70067F904 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		7C0B608E1B2CF9C70067F904 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7C0B60901B2CF9C70067F904 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7C0B60931B2CF9C70067F904 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		7C0B60991B2CF9C70067F904 /* imdbPresenterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = imdbPresenterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +45,9 @@
 		7C0B60AA1B2CFA010067F904 /* Actor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actor.swift; sourceTree = "<group>"; };
 		7C0B60AB1B2CFA010067F904 /* Indexable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Indexable.swift; sourceTree = "<group>"; };
 		7C0B60AC1B2CFA010067F904 /* Movie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		7C98CC611B35D30000CB429D /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		7C98CC641B35D38C00CB429D /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		7C98CC661B35F69B00CB429D /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,13 +89,11 @@
 		7C0B60831B2CF9C70067F904 /* imdbPresenter */ = {
 			isa = PBXGroup;
 			children = (
-				7C0B60A91B2CF9E00067F904 /* model */,
+				7C98CC631B35D33400CB429D /* Controller */,
+				7C98CC5C1B35D1A700CB429D /* View */,
+				7C0B60A91B2CF9E00067F904 /* Model */,
 				7C0B60861B2CF9C70067F904 /* AppDelegate.swift */,
-				7C0B608B1B2CF9C70067F904 /* ViewController.swift */,
-				7C0B608D1B2CF9C70067F904 /* Main.storyboard */,
 				7C0B60901B2CF9C70067F904 /* Images.xcassets */,
-				7C0B60921B2CF9C70067F904 /* LaunchScreen.xib */,
-				7C0B60881B2CF9C70067F904 /* imdbPresenter.xcdatamodeld */,
 				7C0B60841B2CF9C70067F904 /* Supporting Files */,
 			);
 			path = imdbPresenter;
@@ -122,14 +124,34 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		7C0B60A91B2CF9E00067F904 /* model */ = {
+		7C0B60A91B2CF9E00067F904 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				7C0B60AA1B2CFA010067F904 /* Actor.swift */,
 				7C0B60AB1B2CFA010067F904 /* Indexable.swift */,
 				7C0B60AC1B2CFA010067F904 /* Movie.swift */,
 			);
-			name = model;
+			name = Model;
+			sourceTree = "<group>";
+		};
+		7C98CC5C1B35D1A700CB429D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7C98CC611B35D30000CB429D /* Main.storyboard */,
+				7C0B60921B2CF9C70067F904 /* LaunchScreen.xib */,
+				7C0B60881B2CF9C70067F904 /* imdbPresenter.xcdatamodeld */,
+				7C98CC661B35F69B00CB429D /* Cell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		7C98CC631B35D33400CB429D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7C0B608B1B2CF9C70067F904 /* ViewController.swift */,
+				7C98CC641B35D38C00CB429D /* TableViewController.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,7 +234,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C0B608F1B2CF9C70067F904 /* Main.storyboard in Resources */,
+				7C98CC621B35D30000CB429D /* Main.storyboard in Resources */,
 				7C0B60941B2CF9C70067F904 /* LaunchScreen.xib in Resources */,
 				7C0B60911B2CF9C70067F904 /* Images.xcassets in Resources */,
 			);
@@ -233,9 +255,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C0B608C1B2CF9C70067F904 /* ViewController.swift in Sources */,
+				7C98CC651B35D38C00CB429D /* TableViewController.swift in Sources */,
 				7C0B608A1B2CF9C70067F904 /* imdbPresenter.xcdatamodeld in Sources */,
 				7C0B60AF1B2CFA010067F904 /* Movie.swift in Sources */,
 				7C0B60AE1B2CFA010067F904 /* Indexable.swift in Sources */,
+				7C98CC671B35F69B00CB429D /* Cell.swift in Sources */,
 				7C0B60871B2CF9C70067F904 /* AppDelegate.swift in Sources */,
 				7C0B60AD1B2CFA010067F904 /* Actor.swift in Sources */,
 			);
@@ -260,14 +284,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		7C0B608D1B2CF9C70067F904 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7C0B608E1B2CF9C70067F904 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		7C0B60921B2CF9C70067F904 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -431,6 +447,7 @@
 				7C0B60A51B2CF9C70067F904 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7C0B60A61B2CF9C70067F904 /* Build configuration list for PBXNativeTarget "imdbPresenterTests" */ = {
 			isa = XCConfigurationList;
@@ -439,6 +456,7 @@
 				7C0B60A81B2CF9C70067F904 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
