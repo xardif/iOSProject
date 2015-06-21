@@ -14,9 +14,13 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var buttonBar: UIView!
+    
     
     @IBOutlet var headlineCollection: [UILabel] = []
     @IBOutlet var bodyCollection: [UILabel] = []
+    
+    var photoView : UIImageView?
     
     var data : Indexable?
     var url : String = "http://imdb.com/"
@@ -35,6 +39,29 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
             if let data = downloadedData {
                 let image = UIImage(data: data)
                 imageView.image = image
+                imageView.layer.masksToBounds = true
+                //center the picture
+                imageView.contentMode = .ScaleAspectFill
+                
+                //create blur effect
+                var visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light)) as UIVisualEffectView
+                visualEffectView.frame = imageView.bounds
+                visualEffectView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+                //add blur layer
+                imageView.addSubview(visualEffectView)
+                
+                let photoView = UIImageView()
+                photoView.frame.size = CGSize(width: 320, height: imageView.bounds.height)
+                photoView.center = CGPointMake(imageView.bounds.width / 2, imageView.bounds.height / 2)
+                
+                photoView.image = image
+                photoView.contentMode = .ScaleAspectFit
+                photoView.clipsToBounds = true
+                self.photoView = photoView
+                
+                imageView.addSubview(photoView)
+
+                
                 downloadedData = nil
             }
         }
@@ -59,7 +86,30 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
             task.resume()
         }
         self.configureView()
+        
+        let thickness = CGFloat(0.3)
+        //Top border
+        let topBorder = UIView()
+        topBorder.backgroundColor = UIColor.lightGrayColor()
+        topBorder.frame = CGRectMake(0, 0, buttonBar.frame.size.width, thickness)
+        buttonBar.addSubview(topBorder)
+        
+        //Bottom border
+        let bottomBorder = UIView()
+        bottomBorder.backgroundColor = UIColor.lightGrayColor()
+        bottomBorder.frame = CGRectMake(0, buttonBar.frame.size.height - thickness, buttonBar.frame.size.width, thickness)
+        buttonBar.addSubview(bottomBorder)
+        
     }
+    
+    
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        //Fix photoView on rotate
+        photoView?.center.x = size.width / 2
+    }
+    
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
