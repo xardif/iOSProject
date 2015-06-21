@@ -8,17 +8,38 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, NSURLSessionDataDelegate {
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var imdbIdLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet var headlineCollection: [UILabel] = []
     @IBOutlet var bodyCollection: [UILabel] = []
     
     var data : Indexable?
     var url : String = "http://imdb.com/"
+    
+    
+    var downloadedData : NSMutableData?
+    
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+        downloadedData?.appendData(data)
+    }
+    
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+        if (error != nil) {
+            println(error)
+        } else {
+            if let data = downloadedData {
+                let image = UIImage(data: data)
+                imageView.image = image
+                downloadedData = nil
+            }
+        }
+    }
+    
 
     func setData(newData : Indexable) {
         if(data?.getJsonDict() != newData.getJsonDict()) {
@@ -29,6 +50,14 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let url = NSURL(string: self.data!.getUrl()) {
+            downloadedData = NSMutableData()
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let session = NSURLSession(configuration: configuration,
+                delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+            let task = session.dataTaskWithURL(url)
+            task.resume()
+        }
         self.configureView()
     }
     

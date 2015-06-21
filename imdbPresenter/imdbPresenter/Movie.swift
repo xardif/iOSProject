@@ -22,6 +22,10 @@ class Movie : NSObject, Indexable {
     func getJsonDict() -> NSDictionary {
         return jsonDict
     }
+    
+    func getUrl() -> String {
+        return imageLink
+    }
         
     init(JSONDictionary: NSDictionary) {
         super.init()

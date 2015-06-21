@@ -21,6 +21,10 @@ class Actor : NSObject, Indexable {
         return jsonDict
     }
     
+    func getUrl() -> String {
+        return imageLink
+    }
+    
     init(JSONDictionary: NSDictionary) {
         super.init()
         self.jsonDict = JSONDictionary
