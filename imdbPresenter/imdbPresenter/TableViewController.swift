@@ -10,17 +10,20 @@ import UIKit
 
 
 
-class TableViewController: UITableViewController, UISearchBarDelegate, UISearchResultsUpdating {
-    
-    enum ImdbSearchScope {
-        case Movies
-        case Actors
-    }
+class TableViewController: UITableViewController, UISearchBarDelegate, UISearchResultsUpdating, NSURLSessionDataDelegate  {
     
     var searchActive : Bool = false
-    var data = [Indexable]
-    var filteredList:[String] = []
-    var searchController: UISearchController = UISearchController(searchResultsController: nil)
+    var searchController : UISearchController = UISearchController(searchResultsController: nil)
+    
+    let restMovieUrl = "http://rest-xardif.rhcloud.com/api/mongo/movies"
+    let restActorUrl = "http://rest-xardif.rhcloud.com/api/mongo/actors"
+    var state : DownloadState = .DownloadActor
+    
+    var movieDownloadedData, actorDownloadedData : NSMutableData?
+    var data : [Indexable] = []
+    var filteredList : [Indexable] = []
+    var dataByLetterDict : [String:[Indexable]] = [:]
+    var sortedKeys : [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,33 +33,26 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         self.tableView.estimatedRowHeight = 64.0
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
-        self.searchController.searchResultsUpdater = self
-        self.searchController.dimsBackgroundDuringPresentation = false
-        
-        self.searchController.searchBar.scopeButtonTitles = ["Movies", "Actors"]
-        self.searchController.searchBar.delegate = self
-        
-        self.tableView.tableHeaderView = self.searchController.searchBar
-        self.definesPresentationContext = true
-        self.searchController.searchBar.sizeToFit()
+        initSearchController()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
+    // MARK: - Segue preparation
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if (segue.identifier == "UYLSegueShowCountry")
+        if (segue.identifier == "SegueShowData")
         {
             let indexPath: NSIndexPath = self.tableView.indexPathForCell(sender as UITableViewCell)!
-            var data : String
+            var data : Indexable
             if (self.searchController.active)
             {
-                data = self.filteredList[indexPath.section]
-            }
-            else
-            {
-                data = self.data[indexPath.section] as String
+                data = self.filteredList[indexPath.row] //or section
+            } else {
+                let key = self.sortedKeys[indexPath.section]
+                data = self.dataByLetterDict[key]![indexPath.row]
             }
             
             let controller : ViewController = segue.destinationViewController.topViewController as ViewController
@@ -66,26 +62,23 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         }
     }
     
-    
+    // MARK: - UITableView
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell : Cell = self.tableView.dequeueReusableCellWithIdentifier("UYLCountryCellIdentifier",
+        let cell : Cell = self.tableView.dequeueReusableCellWithIdentifier("CellIdentifier",
             forIndexPath: indexPath) as Cell
         
-        		
         
-        var data : String
-        if (self.searchController.active)
-        {
+        var data : Indexable
+        if (self.searchController.active) {
             data = self.filteredList[indexPath.row]
-        }
-        else
-        {
-            data = self.data[indexPath.section] as String
+        } else {
+            let key = self.sortedKeys[indexPath.section]
+            data = self.dataByLetterDict[key]![indexPath.row]
         }
         
-        cell.countryLabel.text = data
-        cell.capitalLabel.text = "Pusto"
+        cell.countryLabel.text = data.getHeadline()
+        cell.capitalLabel.text = data.getSmallHeadline()
     
 
         cell.countryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
@@ -98,7 +91,8 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         if (self.searchController.active) {
             return self.filteredList.count
         } else {
-            return 1
+            let key = self.sortedKeys[section]
+            return self.dataByLetterDict[key]!.count
         }
     }
     
@@ -106,30 +100,20 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         if (self.searchController.active) {
             return 1
         } else {
-            return self.data.count
-        }
-    }
-    
-    func numberOfRowsInSection(tableView: UITableView, section: Int) -> Int {
-        if (self.searchController.active) {
-            return self.filteredList.count
-        } else {
-            return 1
+            return self.sortedKeys.count
         }
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if(!self.searchController.active) {
-            return Array(arrayLiteral: self.data[section])[0]
+            return self.sortedKeys[section]
         }
         return nil
     }
     
     override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
         if(!self.searchController.active) {
-            return data.map({ (elem:String) -> String in
-                return String(Array(elem)[0])
-            })
+            return self.sortedKeys
         }
         return nil
     }
@@ -147,34 +131,157 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         return 0
     }
     
+    // MARK: - SearchBar functions
+    
+    enum SearchScope: Int {
+        case Movies = 0
+        case Actors = 1
+    }
+    
+    func initSearchController(){
+        self.searchController.searchResultsUpdater = self
+        self.searchController.dimsBackgroundDuringPresentation = false
+        
+        self.searchController.searchBar.scopeButtonTitles = ["Movies", "Actors"]
+        self.searchController.searchBar.delegate = self
+        
+        self.tableView.tableHeaderView = self.searchController.searchBar
+        self.definesPresentationContext = true
+        self.searchController.searchBar.sizeToFit()
+    }
+    
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         updateSearchResultsForSearchController(self.searchController)
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         let searchString = searchController.searchBar.text
-        self.searchForText(searchString)
+        let searchScope = SearchScope(rawValue: searchController.searchBar.selectedScopeButtonIndex)!
+        self.searchForText(searchString, scope: searchScope)
         tableView.reloadData()
     }
     
-    func searchForText(searchText: String) {
-        self.filteredList = self.data.filter({ (elem: String) -> Bool in
-            return elem.lowercaseString.contains(searchText.lowercaseString)
-        })
-        println(self.filteredList)
+    func searchForText(searchText: String, scope: SearchScope) {
+        self.filteredList = self.data.filter({ (elem: Indexable) -> Bool in
+            if(scope == .Actors) {
+                return elem is Actor
+                    && elem.getHeadline().lowercaseString.contains(searchText.lowercaseString)
+            } else {
+                return elem is Movie
+                    && elem.getHeadline().lowercaseString.contains(searchText.lowercaseString)
+            }
+            })
+            .sorted({$0.getHeadline() < $1.getHeadline()})
     }
     
+    // MARK: - Downloading and parsing data
+    
+    enum DownloadState {
+        case DownloadActor
+        case DownloadMovie
+    }
     
     func loadData(){
+        if(state == .DownloadActor) {
+            self.actorDownloadedData = NSMutableData()
+        } else {
+            self.movieDownloadedData = NSMutableData()
+        }
+        let urlString = (state == .DownloadActor) ? restActorUrl : restMovieUrl
+        let url = NSURL(string: urlString)
+        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         
+        let session = NSURLSession(configuration: config, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+        let dataTask = session.dataTaskWithURL(url!)
+        
+        dataTask.resume()
+    }
+
+    
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+        if(self.state == .DownloadActor) {
+            actorDownloadedData?.appendData(data)
+        } else if(self.state == .DownloadMovie)  {
+            movieDownloadedData?.appendData(data)
+        }
+    }
+    
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
+        if (error != nil) {
+            println(error)
+        } else {
+            if state == .DownloadMovie {
+                parseData()
+                self.actorDownloadedData = nil
+                self.movieDownloadedData = nil
+                self.tableView.reloadData()
+            }
+            
+            if state == .DownloadActor {
+                state = .DownloadMovie
+                loadData()
+            }
+        }
+    }
+    
+    func parseData() {
+        if let data = actorDownloadedData {
+            var error : NSError?
+            let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: &error)
+            if let result = jsonObject as? NSArray {
+                for elem in result {
+                    let actor = Actor(JSONDictionary: elem as NSDictionary)
+                    self.data.append(actor)
+                }
+            }
+        }
+        if let data = movieDownloadedData {
+            var error : NSError?
+            let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: &error)
+            if let result = jsonObject as? NSArray {
+                for elem in result {
+                    let movie = Movie(JSONDictionary: elem as NSDictionary)
+                    self.data.append(movie)
+                }
+            }
+        }
+        for elem in self.data {
+            var key = elem.getHeadline()[0].uppercaseString
+            if let arrayForLetter = self.dataByLetterDict[key] {
+                var array : [Indexable] = arrayForLetter
+                array.append(elem)
+                dataByLetterDict.updateValue(array, forKey: key)
+            } else {
+                dataByLetterDict.updateValue([elem], forKey: key)
+            }
+        }
+        for (key, value) in self.dataByLetterDict {
+            let sortedArray = value.sorted({$0.getHeadline() < $1.getHeadline()})
+            self.dataByLetterDict.updateValue(sortedArray, forKey: key)
+        }
+        self.sortedKeys = self.dataByLetterDict.keys.array.sorted({$0 < $1})
     }
     
 }
+
+// MARK: - String extensions
 
 extension String {
     
     func contains(find: String) -> Bool{
         return self.rangeOfString(find) != nil
     }
+
+    subscript (i: Int) -> Character {
+        return self[advance(self.startIndex, i)]
+    }
     
+    subscript (i: Int) -> String {
+        return String(self[i] as Character)
+    }
+    
+    subscript (r: Range<Int>) -> String {
+        return substringWithRange(Range(start: advance(startIndex, r.startIndex), end: advance(startIndex, r.endIndex)))
+    }
+
 }

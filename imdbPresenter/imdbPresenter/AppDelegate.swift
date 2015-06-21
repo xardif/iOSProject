@@ -14,7 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     var window: UIWindow?
 
-
+    // MARK: - UISplitView configuration
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         let splitViewController : UISplitViewController  = self.window?.rootViewController as UISplitViewController
@@ -29,14 +30,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         
         var masterNavigationController : UINavigationController = splitViewController.viewControllers[0] as UINavigationController;
         var controller : TableViewController = masterNavigationController.topViewController as TableViewController
+        
 
         return true
     }
     
+    // MARK: - UISplitViewControllDelegate
+    
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         if secondaryViewController.isKindOfClass(UINavigationController)
             && (secondaryViewController as UINavigationController).topViewController.isKindOfClass(TableViewController)
-            && ((secondaryViewController as UINavigationController).topViewController as ViewController).data == "" {
+            && ((secondaryViewController as UINavigationController).topViewController as ViewController).data != nil {
             // Return YES to indicate that we have handled the collapse by doing nothing
             // the secondary controller will be discarded.
             return true
@@ -44,6 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             return false
         }
     }
+    
+    // MARK: - Nothing special
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

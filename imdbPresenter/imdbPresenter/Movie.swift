@@ -8,6 +8,8 @@ class Movie : NSObject, Indexable {
     var titleDescription : String = ""
     var episodeTitle : String = ""
     var desc : String = ""
+    var imageLink : String = ""
+    var jsonDict : NSDictionary = NSDictionary()
     
     func getHeadline() -> String {
         return title
@@ -17,13 +19,13 @@ class Movie : NSObject, Indexable {
         return titleDescription
     }
     
-    init(JSONString: String) {
+    func getJsonDict() -> NSDictionary {
+        return jsonDict
+    }
+        
+    init(JSONDictionary: NSDictionary) {
         super.init()
-        
-        var error : NSError?
-        let JSONData = JSONString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        
-        let JSONDictionary: Dictionary = NSJSONSerialization.JSONObjectWithData(JSONData, options: nil, error: &error) as NSDictionary
+        self.jsonDict = JSONDictionary
         
         for (key, value) in JSONDictionary {
             let keyName = key as String
@@ -32,11 +34,21 @@ class Movie : NSObject, Indexable {
             
             if (keyName == "description"){
                 self.desc = keyValue
+            } else if (keyName == "titleDescription") {
+                var splitArray = split(keyValue){ $0 == "," }
+                self.titleDescription = splitArray[0]
             } else if (self.respondsToSelector(NSSelectorFromString(keyName))) {
                 self.setValue(keyValue, forKey: keyName)
             }
         }
     }
     
-    
+}
+
+func == (lhs: Movie, rhs: Movie) -> Bool {
+    return lhs.getJsonDict() == rhs.getJsonDict()
+}
+
+func == (lhs: Movie, rhs: Actor) -> Bool {
+    return lhs.getJsonDict() == rhs.getJsonDict()
 }

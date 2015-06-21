@@ -6,6 +6,8 @@ class Actor : NSObject, Indexable {
     var imdbId : String = ""
     var name : String = ""
     var desc : String = ""
+    var jsonDict : NSDictionary = NSDictionary()
+    var imageLink : String = ""
     
     func getHeadline() -> String {
         return name
@@ -15,13 +17,13 @@ class Actor : NSObject, Indexable {
         return desc
     }
     
-    init(JSONString: String) {
+    func getJsonDict() -> NSDictionary {
+        return jsonDict
+    }
+    
+    init(JSONDictionary: NSDictionary) {
         super.init()
-        
-        var error : NSError?
-        let JSONData = JSONString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        
-        let JSONDictionary: Dictionary = NSJSONSerialization.JSONObjectWithData(JSONData, options: nil, error: &error) as NSDictionary
+        self.jsonDict = JSONDictionary
         
         for (key, value) in JSONDictionary {
             let keyName = key as String
@@ -36,5 +38,12 @@ class Actor : NSObject, Indexable {
         }
     }
     
-    
+}
+
+func == (lhs: Actor, rhs: Actor) -> Bool {
+    return lhs.getJsonDict() == rhs.getJsonDict()
+}
+
+func == (lhs: Actor, rhs: Movie) -> Bool {
+    return lhs.getJsonDict() == rhs.getJsonDict()
 }
