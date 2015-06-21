@@ -33,6 +33,8 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         
         self.searchController.searchBar.scopeButtonTitles = ["Movies", "Actors"]
         self.searchController.searchBar.delegate = self
+        
+        self.tableView.tableHeaderView = self.searchController.searchBar
         self.definesPresentationContext = true
         self.searchController.searchBar.sizeToFit()
     }
@@ -48,11 +50,11 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
             var data : String
             if (self.searchController.active)
             {
-                data = self.filteredList[indexPath.row]
+                data = self.filteredList[indexPath.section]
             }
             else
             {
-                data = self.data[indexPath.row] as String
+                data = self.data[indexPath.section] as String
             }
             
             let controller : ViewController = segue.destinationViewController.topViewController as ViewController
@@ -68,16 +70,16 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         let cell : Cell = self.tableView.dequeueReusableCellWithIdentifier("UYLCountryCellIdentifier",
             forIndexPath: indexPath) as Cell
         
-        println("row: \(indexPath.row)")
+        
         
         var data : String
         if (self.searchController.active)
         {
-            data = self.filteredList[indexPath.row]
+            data = self.filteredList[indexPath.section]
         }
         else
         {
-            data = self.data[indexPath.row] as String
+            data = self.data[indexPath.section] as String
         }
         
         cell.countryLabel.text = data
@@ -133,10 +135,10 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         if(!self.searchController.active) {
-            println("index : \(index)")
+            println("lololo index : \(index)")
             if(index > 0) {
                 //if Movie then 0 else Actor
-                return index
+                return index-1
             } else {
                 let searchBarFrame : CGRect = self.searchController.searchBar.frame
                 self.tableView.scrollRectToVisible(searchBarFrame, animated: false)

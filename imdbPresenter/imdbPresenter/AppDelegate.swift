@@ -10,14 +10,39 @@ import UIKit
 import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     var window: UIWindow?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        let splitViewController : UISplitViewController  = self.window?.rootViewController as UISplitViewController
+        let navigationController : UINavigationController = splitViewController.viewControllers.last as UINavigationController
+        navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        splitViewController.delegate = self
+        splitViewController.preferredDisplayMode = UISplitViewControllerDisplayMode.AllVisible
+        
+        var minimumWidth : CGFloat = min(CGRectGetWidth(splitViewController.view.bounds),CGRectGetHeight(splitViewController.view.bounds))
+        splitViewController.minimumPrimaryColumnWidth = minimumWidth / 2
+        splitViewController.maximumPrimaryColumnWidth = minimumWidth
+        
+        var masterNavigationController : UINavigationController = splitViewController.viewControllers[0] as UINavigationController;
+        var controller : TableViewController = masterNavigationController.topViewController as TableViewController
+
         return true
+    }
+    
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+        if secondaryViewController.isKindOfClass(UINavigationController)
+            && (secondaryViewController as UINavigationController).topViewController.isKindOfClass(TableViewController)
+            && ((secondaryViewController as UINavigationController).topViewController as ViewController).data == "" {
+            // Return YES to indicate that we have handled the collapse by doing nothing
+            // the secondary controller will be discarded.
+            return true
+        } else {
+            return false
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {
