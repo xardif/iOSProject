@@ -18,12 +18,14 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     }
     
     var searchActive : Bool = false
-    var data = ["San Francisco","New York","San Jose","Chicago","Los Angeles","Austin","Seattle"]
+    var data = [Indexable]
     var filteredList:[String] = []
     var searchController: UISearchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadData()
         
         self.tableView.estimatedRowHeight = 64.0
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -70,12 +72,12 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         let cell : Cell = self.tableView.dequeueReusableCellWithIdentifier("UYLCountryCellIdentifier",
             forIndexPath: indexPath) as Cell
         
-        
+        		
         
         var data : String
         if (self.searchController.active)
         {
-            data = self.filteredList[indexPath.section]
+            data = self.filteredList[indexPath.row]
         }
         else
         {
@@ -102,7 +104,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if (self.searchController.active) {
-            return self.filteredList.count
+            return 1
         } else {
             return self.data.count
         }
@@ -126,7 +128,6 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
         if(!self.searchController.active) {
             return data.map({ (elem:String) -> String in
-                println(Array(elem)[0])
                 return String(Array(elem)[0])
             })
         }
@@ -135,9 +136,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         if(!self.searchController.active) {
-            println("lololo index : \(index)")
             if(index > 0) {
-                //if Movie then 0 else Actor
                 return index-1
             } else {
                 let searchBarFrame : CGRect = self.searchController.searchBar.frame
@@ -162,7 +161,14 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         self.filteredList = self.data.filter({ (elem: String) -> Bool in
             return elem.lowercaseString.contains(searchText.lowercaseString)
         })
+        println(self.filteredList)
     }
+    
+    
+    func loadData(){
+        
+    }
+    
 }
 
 extension String {

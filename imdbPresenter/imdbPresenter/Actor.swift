@@ -7,8 +7,12 @@ class Actor : NSObject, Indexable {
     var name : String = ""
     var desc : String = ""
     
-    func getKey() -> String {
+    func getHeadline() -> String {
         return name
+    }
+    
+    func getSmallHeadline() -> String {
+        return desc
     }
     
     init(JSONString: String) {

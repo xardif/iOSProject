@@ -10,16 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var button: UIButton!
     @IBOutlet weak var area:UILabel?
     @IBOutlet weak var capital:UILabel?
-    @IBOutlet weak var continent:UILabel?
-    @IBOutlet weak var currency:UILabel?
-    @IBOutlet weak var phone:UILabel?
     @IBOutlet weak var population:UILabel?
-    @IBOutlet weak var tld:UILabel?
     
     @IBOutlet var headlineCollection: [UILabel] = []
     @IBOutlet var bodyCollection: [UILabel] = []
+    
+    @IBOutlet weak var titleBar: UINavigationItem!
     
     var data : String = ""
     
@@ -33,6 +32,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
+        println(self.headlineCollection)
     }
     
     override func didReceiveMemoryWarning() {
@@ -54,10 +54,13 @@ class ViewController: UIViewController {
         self.area?.text = "None"
         self.population?.text = "None"
         self.capital?.text = "None"
-        self.continent?.text = "None"
-        self.currency?.text = "None"
-        self.phone?.text = "None"
-        self.tld?.text = "None"
     }
+    
+    @IBAction func openLinkAction(sender: UIButton) {
+        if let url = NSURL(string: "http://wp.pl") {
+            UIApplication.sharedApplication().openURL(url)
+        }
+    }
+    
     
 }

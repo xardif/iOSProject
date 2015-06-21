@@ -1,3 +1,4 @@
 protocol Indexable{
-    func getKey() -> String
+    func getHeadline() -> String
+    func getSmallHeadline() -> String
 }

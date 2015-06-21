@@ -9,8 +9,12 @@ class Movie : NSObject, Indexable {
     var episodeTitle : String = ""
     var desc : String = ""
     
-    func getKey() -> String {
+    func getHeadline() -> String {
         return title
+    }
+    
+    func getSmallHeadline() -> String {
+        return titleDescription
     }
     
     init(JSONString: String) {
