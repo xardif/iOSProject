@@ -12,5 +12,6 @@ class Cell : UITableViewCell {
     
     @IBOutlet weak var countryLabel: UILabel!
     @IBOutlet weak var capitalLabel: UILabel!
+    @IBOutlet weak var typeLabel: UILabel!
     
 }

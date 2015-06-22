@@ -13,19 +13,18 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
     @IBOutlet weak var imdbIdLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var buttonBar: UIView!
-    
+    @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet var headlineCollection: [UILabel] = []
     @IBOutlet var bodyCollection: [UILabel] = []
     
-    var photoView : UIImageView?
-    
     var data : Indexable?
+    
+    // MARK: - Image display
+    @IBOutlet weak var imageView: UIImageView!
+    var photoView : UIImageView?
     var url : String = "http://imdb.com/"
-    
-    
     var downloadedData : NSMutableData?
     
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
@@ -75,8 +74,11 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
         }
     }
     
+    // MARK: - View init with rotation fix
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         if let url = NSURL(string: self.data!.getUrl()) {
             downloadedData = NSMutableData()
             let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -85,6 +87,7 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
             let task = session.dataTaskWithURL(url)
             task.resume()
         }
+                
         self.configureView()
         
         let thickness = CGFloat(0.3)
@@ -115,6 +118,8 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resourcs that can be recreated.
     }
+    
+    // MARK: - Init labels with data
     
     func configureView() {
         for label in self.headlineCollection {

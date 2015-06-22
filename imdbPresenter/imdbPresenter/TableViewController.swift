@@ -79,10 +79,12 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         
         cell.countryLabel.text = data.getHeadline()
         cell.capitalLabel.text = data.getSmallHeadline()
+        cell.typeLabel.text = (data is Actor) ? "A" : "M"
     
 
         cell.countryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         cell.capitalLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        cell.typeLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         return cell
     }
@@ -121,7 +123,7 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         if(!self.searchController.active) {
             if(index > 0) {
-                return index-1
+                return index
             } else {
                 let searchBarFrame : CGRect = self.searchController.searchBar.frame
                 self.tableView.scrollRectToVisible(searchBarFrame, animated: false)
