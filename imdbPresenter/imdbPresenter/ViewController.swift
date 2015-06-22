@@ -106,6 +106,9 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
         photoView?.center.x = size.width / 2
     }
     
+    func resolvePhotoViewPosition(collapseWidth : CGFloat){
+        photoView?.center.x = (self.imageView.frame.width + collapseWidth) / 2
+    }
 
     
     override func didReceiveMemoryWarning() {

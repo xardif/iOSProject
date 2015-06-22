@@ -10,8 +10,9 @@ import UIKit
 
 class Cell : UITableViewCell {
     
-    @IBOutlet weak var countryLabel: UILabel!
-    @IBOutlet weak var capitalLabel: UILabel!
+    
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var typeLabel: UILabel!
     
 }

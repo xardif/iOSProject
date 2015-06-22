@@ -77,13 +77,13 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
             data = self.dataByLetterDict[key]![indexPath.row]
         }
         
-        cell.countryLabel.text = data.getHeadline()
-        cell.capitalLabel.text = data.getSmallHeadline()
+        cell.nameLabel.text = data.getHeadline()
+        cell.descLabel.text = data.getSmallHeadline()
         cell.typeLabel.text = (data is Actor) ? "A" : "M"
     
 
-        cell.countryLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
-        cell.capitalLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        cell.nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        cell.descLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         cell.typeLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         
         return cell
@@ -208,9 +208,15 @@ class TableViewController: UITableViewController, UISearchBarDelegate, UISearchR
         }
     }
     
+    
+    
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         if (error != nil) {
-            println(error)
+            let alertController = UIAlertController(title: "Error", message:
+                "No internet connection", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
         } else {
             if state == .DownloadMovie {
                 parseData()

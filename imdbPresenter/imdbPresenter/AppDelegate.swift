@@ -49,6 +49,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
     
+    func splitViewController(svc: UISplitViewController, willChangeToDisplayMode displayMode: UISplitViewControllerDisplayMode) {
+        var collapseWidth = (svc.viewControllers[0].topViewController as TableViewController).view.frame.width
+        if(displayMode == .AllVisible) {
+            collapseWidth = -collapseWidth
+        }
+        (svc.viewControllers[1].topViewController as ViewController).resolvePhotoViewPosition(collapseWidth)
+    }
+    
     // MARK: - Nothing special
 
     func applicationWillResignActive(application: UIApplication) {
