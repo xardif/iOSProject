@@ -79,16 +79,10 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let url = NSURL(string: self.data!.getUrl()) {
-            downloadedData = NSMutableData()
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration,
-                delegate: self, delegateQueue: NSOperationQueue.mainQueue())
-            let task = session.dataTaskWithURL(url)
-            task.resume()
+        
+        if(data != nil){
+            self.configureView()
         }
-                
-        self.configureView()
         
         let thickness = CGFloat(0.3)
         //Top border
@@ -122,6 +116,15 @@ class ViewController: UIViewController, NSURLSessionDataDelegate {
     // MARK: - Init labels with data
     
     func configureView() {
+        if let url = NSURL(string: self.data!.getUrl()) {
+            downloadedData = NSMutableData()
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let session = NSURLSession(configuration: configuration,
+                delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+            let task = session.dataTaskWithURL(url)
+            task.resume()
+        }
+        
         for label in self.headlineCollection {
             label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         }
